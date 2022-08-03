@@ -6028,8 +6028,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5006512736099120934}
   - component: {fileID: 3166231814716824156}
-  - component: {fileID: 8296172667895989558}
   - component: {fileID: 8296172667895989559}
+  - component: {fileID: 8296172667895989560}
   m_Layer: 0
   m_Name: Jammo_LowPoly
   m_TagString: Untagged
@@ -6037,20 +6037,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &8296172667895989558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8296172667895989557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70ae3e2314f687940ba9af4c6cf98b22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movementSpeed: 2.5
-  runMultiplier: 2
 --- !u!143 &8296172667895989559
 CharacterController:
   m_ObjectHideFlags: 0
@@ -6069,6 +6055,18 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.79, z: 0.03}
+--- !u!114 &8296172667895989560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8296172667895989557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb80b2e607b90e749ba4b1a45c1d3aa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8389181124873702766
 GameObject:
   m_ObjectHideFlags: 0
