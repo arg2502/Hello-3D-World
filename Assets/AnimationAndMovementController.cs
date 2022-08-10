@@ -122,24 +122,24 @@ public class AnimationAndMovementController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (!isJumping && characterController.isGrounded && isJumpPressed)
-        {
-            if (jumpCount < 3 && currentJumpResetCoroutine != null)
-            {
-                StopCoroutine(currentJumpResetCoroutine);
-            }
-            animator.SetBool(isJumpingHash, true);
-            isJumpAnimating = true;
-            isJumping = true;
-            jumpCount += 1;
-            animator.SetInteger(jumpCountHash, jumpCount);
-            currentMovement.y = initialJumpVelocities[jumpCount];
-            appliedMovement.y = initialJumpVelocities[jumpCount];
-        }
-        else if (!isJumpPressed && isJumping && characterController.isGrounded)
-        {
-            isJumping = false;
-        }
+        // if (!isJumping && characterController.isGrounded && isJumpPressed)
+        // {
+        //     if (jumpCount < 3 && currentJumpResetCoroutine != null)
+        //     {
+        //         StopCoroutine(currentJumpResetCoroutine);
+        //     }
+        //     animator.SetBool(isJumpingHash, true);
+        //     isJumpAnimating = true;
+        //     isJumping = true;
+        //     jumpCount += 1;
+        //     animator.SetInteger(jumpCountHash, jumpCount);
+        //     currentMovement.y = initialJumpVelocities[jumpCount];
+        //     appliedMovement.y = initialJumpVelocities[jumpCount];
+        // }
+        // else if (!isJumpPressed && isJumping && characterController.isGrounded)
+        // {
+        //     isJumping = false;
+        // }
     }
 
     private IEnumerator JumpResetCoroutine()
@@ -194,36 +194,36 @@ public class AnimationAndMovementController : MonoBehaviour
 
     private void HandleGravity()
     {
-        bool isFalling = currentMovement.y <= 0f || !isJumpPressed;
-        float fallMultiplier = 2f;
-        if (characterController.isGrounded)
-        {
-            if (isJumpAnimating)
-            {
-                animator.SetBool(isJumpingHash, false);
-                isJumpAnimating = false;
-                currentJumpResetCoroutine = StartCoroutine(JumpResetCoroutine());
-                if (jumpCount == 3)
-                {
-                    jumpCount = 0;
-                    animator.SetInteger(jumpCountHash, jumpCount);
-                }
-            }
-            currentMovement.y = groundedGravity;
-            appliedMovement.y = groundedGravity;
-        }
-        else if (isFalling)
-        {
-            float previousYVelocity = currentMovement.y;
-            currentMovement.y = currentMovement.y + (jumpGravities[jumpCount] * fallMultiplier * Time.deltaTime);
-            appliedMovement.y = Mathf.Max((previousYVelocity + currentMovement.y) * 0.5f, -20f);
-        }
-        else
-        {
-            float previousYVelocity = currentMovement.y;
-            currentMovement.y = currentMovement.y + (jumpGravities[jumpCount] * Time.deltaTime);
-            appliedMovement.y = (previousYVelocity + currentMovement.y) * 0.5f;
-        }
+        // bool isFalling = currentMovement.y <= 0f || !isJumpPressed;
+        // float fallMultiplier = 2f;
+        // if (characterController.isGrounded)
+        // {
+        //     if (isJumpAnimating)
+        //     {
+        //         // animator.SetBool(isJumpingHash, false);
+        //         // isJumpAnimating = false;
+        //         // currentJumpResetCoroutine = StartCoroutine(JumpResetCoroutine());
+        //         // if (jumpCount == 3)
+        //         // {
+        //         //     jumpCount = 0;
+        //         //     animator.SetInteger(jumpCountHash, jumpCount);
+        //         // }
+        //     }
+        //     // currentMovement.y = groundedGravity;
+        //     // appliedMovement.y = groundedGravity;
+        // }
+        // else if (isFalling)
+        // {
+        //     float previousYVelocity = currentMovement.y;
+        //     currentMovement.y = currentMovement.y + (jumpGravities[jumpCount] * fallMultiplier * Time.deltaTime);
+        //     appliedMovement.y = Mathf.Max((previousYVelocity + currentMovement.y) * 0.5f, -20f);
+        // }
+        // else
+        // {
+        //     float previousYVelocity = currentMovement.y;
+        //     currentMovement.y = currentMovement.y + (jumpGravities[jumpCount] * Time.deltaTime);
+        //     appliedMovement.y = (previousYVelocity + currentMovement.y) * 0.5f;
+        // }
     }
 
     private void Update() 

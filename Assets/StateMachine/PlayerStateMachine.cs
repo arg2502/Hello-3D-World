@@ -34,7 +34,7 @@ public class PlayerStateMachine : MonoBehaviour
     private bool isJumping = false;
     private int isJumpingHash;
     private int jumpCountHash;
-    private bool isJumpAnimating = false;
+    private bool requiredNewJumpPress = false;
     private int jumpCount = 0;
     Dictionary<int, float> initialJumpVelocities = new Dictionary<int, float>();
     Dictionary<int, float> jumpGravities = new Dictionary<int, float>(); 
@@ -43,6 +43,25 @@ public class PlayerStateMachine : MonoBehaviour
     // State variables
     PlayerBaseState _currentState;
     PlayerStateFactory _states;
+
+    // getters and setters
+    public PlayerBaseState CurrentState { get { return _currentState; } set { _currentState = value; } }
+    public bool IsJumpPressed { get { return isJumpPressed; } }
+    public Animator Animator { get { return animator; } }
+    public Coroutine CurrentJumpResetCoroutine { get { return currentJumpResetCoroutine; } set { currentJumpResetCoroutine = value; } }
+    public Dictionary<int, float> InitialJumpVelocities { get { return initialJumpVelocities; } }
+    public int JumpCount { get { return jumpCount; } set { jumpCount = value;} }
+    public int IsJumpingHash { get { return isJumpingHash; } }
+    public int JumpCountHash { get { return jumpCountHash; } }
+    public bool RequiredNewJumpPress { get { return requiredNewJumpPress; } set { requiredNewJumpPress = value; } }
+    public bool IsJumping { set { isJumping = value; } }
+    public float CurrentMovementY { get { return currentMovement.y; } set { currentMovement.y = value; } }
+    public float AppliedMovementY { get { return appliedMovement.y; } set { appliedMovement.y = value; } }
+    public CharacterController CharacterController { get { return characterController; } }
+    public float GroundedGravity { get { return groundedGravity; } }
+    public Dictionary<int, float> JumpGravities { get { return jumpGravities; } }
+    public bool IsMovementPressed { get { return isMovementPressed; } }
+    public bool IsRunPressed { get { return isRunPressed; } }
 
     private void Awake()
     {
@@ -125,6 +144,7 @@ public class PlayerStateMachine : MonoBehaviour
     private void OnJump(InputAction.CallbackContext context)
     {
         isJumpPressed = context.ReadValueAsButton();
+        requiredNewJumpPress = false;
     }
 
     private void HandleRotation()
@@ -150,6 +170,7 @@ public class PlayerStateMachine : MonoBehaviour
     private void Update()
     {
         HandleRotation();
+        _currentState.UpdateState();
         characterController.Move(appliedMovement * Time.deltaTime * movementSpeed);
     }
 
