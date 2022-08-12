@@ -21,17 +21,20 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void EnterState()
     {
-        // throw new System.NotImplementedException();
+        _ctx.Animator.SetBool(_ctx.IsWalkingHash, false);
+        _ctx.Animator.SetBool(_ctx.IsRunningHash, false);
+        _ctx.AppliedMovementX = 0;
+        _ctx.AppliedMovementZ = 0;
     }
 
     public override void ExitState()
     {
-        // throw new System.NotImplementedException();
+    
     }
 
     public override void InitializeSubState()
     {
-        // throw new System.NotImplementedException();
+    
     }
 
     public override void UpdateState()

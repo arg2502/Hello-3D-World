@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerJumpState : PlayerBaseState
+public class PlayerJumpState : PlayerBaseState, IRootState
 {
     IEnumerator IJumpResetCoroutine()
     {
@@ -12,12 +12,16 @@ public class PlayerJumpState : PlayerBaseState
     public PlayerJumpState(PlayerStateMachine currentContext, PlayerStateFactory playerStateFactory)
     : base (currentContext, playerStateFactory) 
     {
+        _isRootState = true;
         InitializeSubState();
     }
 
     public override void CheckSwitchStates()
     {
-        Debug.Log($"isGrounded: {_ctx.CharacterController.isGrounded}");
+        // Debug.LogError($"MY isGrounded: {_ctx.IsGrounded}, Character Controller isGrounded: {_ctx.CharacterController.isGrounded}");
+        // Debug.LogError($"AppliedMovementY: {_ctx.AppliedMovementY}");
+        // Debug.LogError($"CurrentMovementY: {_ctx.CurrentMovementY}");
+        // if (_ctx.IsGrounded)
         if (_ctx.CharacterController.isGrounded)
         {
             SwitchState(_factory.Grounded());
@@ -62,8 +66,8 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void UpdateState()
     {
-        CheckSwitchStates();
         HandleGravity();
+        CheckSwitchStates();
     }
 
     private void HandleJump()
@@ -82,7 +86,7 @@ public class PlayerJumpState : PlayerBaseState
         
     }
 
-    private void HandleGravity()
+    public void HandleGravity()
     {
         bool isFalling = _ctx.CurrentMovementY <= 0f || !_ctx.IsJumpPressed;
         float fallMultiplier = 2f;
@@ -90,7 +94,7 @@ public class PlayerJumpState : PlayerBaseState
         {
             float previousYVelocity = _ctx.CurrentMovementY;
             _ctx.CurrentMovementY = _ctx.CurrentMovementY + (_ctx.JumpGravities[_ctx.JumpCount] * fallMultiplier * Time.deltaTime);
-            _ctx.AppliedMovementY = Mathf.Max((previousYVelocity + _ctx.CurrentMovementY) * 0.5f, -20f);
+            _ctx.AppliedMovementY = Mathf.Max((previousYVelocity + _ctx.CurrentMovementY) * 0.5f, -30f);
         }
         else
         {

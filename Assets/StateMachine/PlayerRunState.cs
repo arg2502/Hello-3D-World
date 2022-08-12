@@ -9,26 +9,36 @@ public class PlayerRunState : PlayerBaseState
     
     public override void CheckSwitchStates()
     {
-        // throw new System.NotImplementedException();
+        if (!_ctx.IsMovementPressed)
+        {
+            SwitchState(_factory.Idle());
+        }
+        else if (_ctx.IsMovementPressed && !_ctx.IsRunPressed)
+        {
+            SwitchState(_factory.Walk());
+        }
     }
 
     public override void EnterState()
     {
-        // throw new System.NotImplementedException();
+        _ctx.Animator.SetBool(_ctx.IsWalkingHash, true);
+        _ctx.Animator.SetBool(_ctx.IsRunningHash, true);
     }
 
     public override void ExitState()
     {
-        // throw new System.NotImplementedException();
+        
     }
 
     public override void InitializeSubState()
     {
-        // throw new System.NotImplementedException();
+        
     }
 
     public override void UpdateState()
     {
+        _ctx.AppliedMovementX = _ctx.CurrentMovementInput.x * _ctx.RunMultiplier;
+        _ctx.AppliedMovementZ = _ctx.CurrentMovementInput.y * _ctx.RunMultiplier;
         CheckSwitchStates();
     }
 }

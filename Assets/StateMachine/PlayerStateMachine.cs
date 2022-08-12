@@ -5,12 +5,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerStateMachine : MonoBehaviour
 {
+    [SerializeField] private LayerMask platformLayerMask;
     private PlayerInput playerInput;
     private CharacterController characterController;
     private Animator animator;
 
     private int isWalkingHash;
     private int isRunningHash;
+    private int isFallingHash;
 
     private float movementSpeed = 2.5f;
     private float runMultiplier = 2f;
@@ -56,12 +58,21 @@ public class PlayerStateMachine : MonoBehaviour
     public bool RequiredNewJumpPress { get { return requiredNewJumpPress; } set { requiredNewJumpPress = value; } }
     public bool IsJumping { set { isJumping = value; } }
     public float CurrentMovementY { get { return currentMovement.y; } set { currentMovement.y = value; } }
+    public float AppliedMovementX { get { return appliedMovement.x; } set { appliedMovement.x = value; } }
     public float AppliedMovementY { get { return appliedMovement.y; } set { appliedMovement.y = value; } }
+    public float AppliedMovementZ { get { return appliedMovement.z; } set { appliedMovement.z = value; } }
     public CharacterController CharacterController { get { return characterController; } }
-    public float GroundedGravity { get { return groundedGravity; } }
+    // public float GroundedGravity { get { return groundedGravity; } }
+    public float Gravity { get { return gravity; } }
     public Dictionary<int, float> JumpGravities { get { return jumpGravities; } }
     public bool IsMovementPressed { get { return isMovementPressed; } }
     public bool IsRunPressed { get { return isRunPressed; } }
+    public int IsWalkingHash { get { return isWalkingHash; } }
+    public int IsRunningHash { get { return isRunningHash; } }
+    public int IsFallingHash { get { return isFallingHash; } }
+    public Vector2 CurrentMovementInput { get { return currentMovementInput; } }
+    public float RunMultiplier { get { return runMultiplier; } }
+    public bool IsGrounded { get { return IsPlayerGrounded(); } }
 
     private void Awake()
     {
@@ -78,6 +89,7 @@ public class PlayerStateMachine : MonoBehaviour
         isRunningHash = Animator.StringToHash("isRunning");
         isJumpingHash = Animator.StringToHash("isJumping");
         jumpCountHash = Animator.StringToHash("jumpCount");
+        isFallingHash = Animator.StringToHash("isFalling");
 
         playerInput.CharacterControls.Move.started += OnMovementInput;
         playerInput.CharacterControls.Move.canceled += OnMovementInput;
@@ -91,6 +103,11 @@ public class PlayerStateMachine : MonoBehaviour
 
         SetupJumpVariables();
     }
+
+    private void Start()
+    {
+        characterController.Move(appliedMovement * Time.deltaTime);
+    } 
 
     private void OnEnable() 
     {
@@ -107,7 +124,7 @@ public class PlayerStateMachine : MonoBehaviour
         // just copied from tutorial -- look up more about the math/science behind this:
         // https://www.youtube.com/watch?v=hG9SzQxaCm8
         float timeToApex = maxJumpTime / 2;
-        gravity = (-2 * maxJumpHeight) / Mathf.Pow(timeToApex, 2);
+        float initialGravity = (-2 * maxJumpHeight) / Mathf.Pow(timeToApex, 2);
         initialJumpVelocity = (2 * maxJumpHeight) / timeToApex;
 
         float secondJumpGravity = (-2 * (maxJumpHeight + 1)) / Mathf.Pow((timeToApex * 1.25f), 2);
@@ -119,8 +136,8 @@ public class PlayerStateMachine : MonoBehaviour
         initialJumpVelocities.Add(2, secondJumpInitialVelocity);
         initialJumpVelocities.Add(3, thirdJumpInitialVelocity);
 
-        jumpGravities.Add(0, gravity);
-        jumpGravities.Add(1, gravity);
+        jumpGravities.Add(0, initialGravity);
+        jumpGravities.Add(1, initialGravity);
         jumpGravities.Add(2, secondJumpGravity);
         jumpGravities.Add(3, thirdJumpGravity);
     }
@@ -167,10 +184,17 @@ public class PlayerStateMachine : MonoBehaviour
         }
     }
 
+    private bool IsPlayerGrounded()
+    {
+        var center = characterController.transform.position + characterController.center;
+        var distance = characterController.bounds.extents.y + 0.1f;
+        return Physics.Raycast(center, Vector3.down, distance, platformLayerMask);
+    }
+
     private void Update()
     {
         HandleRotation();
-        _currentState.UpdateState();
+        _currentState.UpdateStates();
         characterController.Move(appliedMovement * Time.deltaTime * movementSpeed);
     }
 

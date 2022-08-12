@@ -20,21 +20,24 @@ public class PlayerWalkState : PlayerBaseState
 
     public override void EnterState()
     {
-        // throw new System.NotImplementedException();
+        _ctx.Animator.SetBool(_ctx.IsWalkingHash, true);
+        _ctx.Animator.SetBool(_ctx.IsRunningHash, false);
     }
 
     public override void ExitState()
     {
-        // throw new System.NotImplementedException();
+        
     }
 
     public override void InitializeSubState()
     {
-        // throw new System.NotImplementedException();
+        
     }
 
     public override void UpdateState()
     {
+        _ctx.AppliedMovementX = _ctx.CurrentMovementInput.x;
+        _ctx.AppliedMovementZ = _ctx.CurrentMovementInput.y;
         CheckSwitchStates();
     }
 }

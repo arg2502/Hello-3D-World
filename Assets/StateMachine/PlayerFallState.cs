@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerGroundedState : PlayerBaseState, IRootState
+public class PlayerFallState : PlayerBaseState, IRootState
 {
-    public PlayerGroundedState(PlayerStateMachine currentContext, PlayerStateFactory playerStateFactory)
-    : base(currentContext, playerStateFactory) 
+    public PlayerFallState(PlayerStateMachine currentContext, PlayerStateFactory playerStateFactory)
+    :base(currentContext, playerStateFactory)
     {
         _isRootState = true;
         InitializeSubState();
@@ -13,29 +13,21 @@ public class PlayerGroundedState : PlayerBaseState, IRootState
 
     public override void CheckSwitchStates()
     {
-        if (_ctx.IsJumpPressed && !_ctx.RequiredNewJumpPress)
+        if(_ctx.IsGrounded)
         {
-            SwitchState(_factory.Jump());
+            SwitchState(_factory.Grounded());
         }
-        else if (!_ctx.IsGrounded)
-        {
-            SwitchState(_factory.Fall());
-        }
-    }
-
-    public void HandleGravity()
-    {
-        _ctx.CurrentMovementY = _ctx.Gravity;
-        _ctx.AppliedMovementY = _ctx.Gravity;
     }
 
     public override void EnterState()
     {
-        HandleGravity();
+        Debug.LogError("ENTER FALLING");
+        _ctx.Animator.SetBool(_ctx.IsFallingHash, true);
     }
 
     public override void ExitState()
     {
+        _ctx.Animator.SetBool(_ctx.IsFallingHash, false);
     }
 
     public override void InitializeSubState()
@@ -56,7 +48,14 @@ public class PlayerGroundedState : PlayerBaseState, IRootState
 
     public override void UpdateState()
     {
+        HandleGravity();
         CheckSwitchStates();
     }
 
+    public void HandleGravity()
+    {
+        float prevYVel = _ctx.CurrentMovementY;
+        _ctx.CurrentMovementY = _ctx.CurrentMovementY + (_ctx.Gravity * Time.deltaTime);
+        _ctx.AppliedMovementY = Mathf.Max((prevYVel + _ctx.CurrentMovementY) * .5f, -20f);
+    }
 }
