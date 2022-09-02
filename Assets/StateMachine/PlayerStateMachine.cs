@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerStateMachine : MonoBehaviour
 {
-    [SerializeField] private LayerMask platformLayerMask;
+    // [SerializeField] private LayerMask platformLayerMask;
     private PlayerInput playerInput;
     private CharacterController characterController;
     private Animator animator;
@@ -61,7 +61,7 @@ public class PlayerStateMachine : MonoBehaviour
     public float AppliedMovementX { get { return appliedMovement.x; } set { appliedMovement.x = value; } }
     public float AppliedMovementY { get { return appliedMovement.y; } set { appliedMovement.y = value; } }
     public float AppliedMovementZ { get { return appliedMovement.z; } set { appliedMovement.z = value; } }
-    public CharacterController CharacterController { get { return characterController; } }
+    // public CharacterController CharacterController { get { return characterController; } }
     // public float GroundedGravity { get { return groundedGravity; } }
     public float Gravity { get { return gravity; } }
     public Dictionary<int, float> JumpGravities { get { return jumpGravities; } }
@@ -188,7 +188,7 @@ public class PlayerStateMachine : MonoBehaviour
     {
         var center = characterController.transform.position + characterController.center;
         var distance = characterController.bounds.extents.y + 0.1f;
-        return Physics.Raycast(center, Vector3.down, distance, platformLayerMask);
+        return Physics.Raycast(center, Vector3.down, distance);
     }
 
     private void Update()

@@ -22,7 +22,7 @@ public class PlayerJumpState : PlayerBaseState, IRootState
         // Debug.LogError($"AppliedMovementY: {_ctx.AppliedMovementY}");
         // Debug.LogError($"CurrentMovementY: {_ctx.CurrentMovementY}");
         // if (_ctx.IsGrounded)
-        if (_ctx.CharacterController.isGrounded)
+        if (_ctx.IsGrounded)
         {
             SwitchState(_factory.Grounded());
         }
