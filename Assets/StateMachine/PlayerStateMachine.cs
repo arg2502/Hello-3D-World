@@ -32,7 +32,7 @@ public class PlayerStateMachine : MonoBehaviour
     private bool isJumpPressed = false;
     private float initialJumpVelocity;
     private float maxJumpHeight = 1.20f;
-    private float maxJumpTime = 0.85f;
+    private float maxJumpTime = 1.05f;
     private bool isJumping = false;
     private int isJumpingHash;
     private int jumpCountHash;
@@ -78,7 +78,7 @@ public class PlayerStateMachine : MonoBehaviour
     {
         playerInput = new PlayerInput();
         characterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
 
         // setup state
         _states = new PlayerStateFactory(this);
