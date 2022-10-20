@@ -80,6 +80,7 @@ public class PlayerJumpState : PlayerBaseState, IRootState
         _ctx.RequiredNewJumpPress = true;
         _ctx.IsJumping = true;
         _ctx.JumpCount += 1;
+        // _ctx.JumpCount = 1;
         _ctx.Animator.SetInteger(_ctx.JumpCountHash, _ctx.JumpCount);
         _ctx.CurrentMovementY = _ctx.InitialJumpVelocities[_ctx.JumpCount];
         _ctx.AppliedMovementY = _ctx.InitialJumpVelocities[_ctx.JumpCount];

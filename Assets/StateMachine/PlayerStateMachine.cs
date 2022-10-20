@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerStateMachine : MonoBehaviour
 {
     // [SerializeField] private LayerMask platformLayerMask;
-    private PlayerInput playerInput;
+    private MyPlayerInput playerInput;
     private CharacterController characterController;
     private Animator animator;
 
@@ -74,9 +74,14 @@ public class PlayerStateMachine : MonoBehaviour
     public float RunMultiplier { get { return runMultiplier; } }
     public bool IsGrounded { get { return IsPlayerGrounded(); } }
 
+
+    private float turnSmoothVelocity;
+    public float turnSmoothTime = 0.1f;
+    [SerializeField] private Transform cam;
+
     private void Awake()
     {
-        playerInput = new PlayerInput();
+        playerInput = new MyPlayerInput();
         characterController = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
 
@@ -166,22 +171,22 @@ public class PlayerStateMachine : MonoBehaviour
 
     private void HandleRotation()
     {
-        Vector3 positionToLookAt;
+        // Vector3 positionToLookAt;
 
-        // The change in position our character should point to
-        positionToLookAt.x = currentMovement.x;
-        positionToLookAt.y = 0f;
-        positionToLookAt.z = currentMovement.z;
+        // // The change in position our character should point to
+        // positionToLookAt.x = currentMovement.x;
+        // positionToLookAt.y = 0f;
+        // positionToLookAt.z = currentMovement.z;
 
-        // The current rotation of our character
-        Quaternion currentRotation = transform.rotation;
+        // // The current rotation of our character
+        // Quaternion currentRotation = transform.rotation;
 
-        if (isMovementPressed)
-        {
-            // Creates a new rotation based on where the player is currently pressing
-            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
-            transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime);
-        }
+        // if (isMovementPressed)
+        // {
+        //     // Creates a new rotation based on where the player is currently pressing
+        //     Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
+        //     transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime);
+        // }
     }
 
     private bool IsPlayerGrounded()
@@ -195,7 +200,15 @@ public class PlayerStateMachine : MonoBehaviour
     {
         HandleRotation();
         _currentState.UpdateStates();
-        characterController.Move(appliedMovement * Time.deltaTime * movementSpeed);
+
+        // from Brackeys
+        float targetAngle = Mathf.Atan2(currentMovement.x, currentMovement.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+
+
+        transform.rotation = Quaternion.Euler(0f, angle, 0f);
+        Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+        characterController.Move((appliedMovement + moveDir.normalized) * Time.deltaTime * movementSpeed);
     }
 
 }
